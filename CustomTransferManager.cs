@@ -12,6 +12,7 @@ namespace EmployOvereducatedWorkers
 {
     public class CustomTransferManager : TransferManager
     {
+        private static bool _init = false;
         private static float GetDistanceMultiplier(TransferReason material)
         {
             switch (material)
@@ -233,7 +234,7 @@ namespace EmployOvereducatedWorkers
             }
         }
 
-        private void GetParams()
+        private static void Init()
         {
             var inst = Singleton<TransferManager>.instance;
             var incomingCount = typeof(TransferManager).GetField("m_incomingCount", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -256,44 +257,25 @@ namespace EmployOvereducatedWorkers
             m_outgoingAmount = outgoingAmount.GetValue(inst) as int[];
         }
 
-        private void SetParams()
-        {
-            var inst = Singleton<TransferManager>.instance;
-            var incomingCount = typeof(TransferManager).GetField("m_incomingCount", BindingFlags.NonPublic | BindingFlags.Instance);
-            var incomingOffers = typeof(TransferManager).GetField("m_incomingOffers", BindingFlags.NonPublic | BindingFlags.Instance);
-            var incomingAmount = typeof(TransferManager).GetField("m_incomingAmount", BindingFlags.NonPublic | BindingFlags.Instance);
-            var outgoingCount = typeof(TransferManager).GetField("m_outgoingCount", BindingFlags.NonPublic | BindingFlags.Instance);
-            var outgoingOffers = typeof(TransferManager).GetField("m_outgoingOffers", BindingFlags.NonPublic | BindingFlags.Instance);
-            var outgoingAmount = typeof(TransferManager).GetField("m_outgoingAmount", BindingFlags.NonPublic | BindingFlags.Instance);
-            if (inst == null)
-            {
-                CODebugBase<LogChannel>.Error(LogChannel.Core, "No instance of TransferManager found!");
-                DebugOutputPanel.AddMessage(PluginManager.MessageType.Error, "No instance of TransferManager found!");
-                return;
-            }
-            incomingCount.SetValue(inst, m_incomingCount);
-            incomingOffers.SetValue(inst, m_incomingOffers);
-            incomingAmount.SetValue(inst, m_incomingAmount);
-            outgoingCount.SetValue(inst, m_outgoingCount);
-            outgoingOffers.SetValue(inst, m_outgoingOffers);
-            outgoingAmount.SetValue(inst, m_outgoingAmount);
-        }
+        private static TransferManager.TransferOffer[] m_outgoingOffers;
 
-        private TransferManager.TransferOffer[] m_outgoingOffers;
+        private static TransferManager.TransferOffer[] m_incomingOffers;
 
-        private TransferManager.TransferOffer[] m_incomingOffers;
+        private static ushort[] m_outgoingCount;
 
-        private ushort[] m_outgoingCount;
+        private static ushort[] m_incomingCount;
 
-        private ushort[] m_incomingCount;
+        private static int[] m_outgoingAmount;
 
-        private int[] m_outgoingAmount;
-
-        private int[] m_incomingAmount;
+        private static int[] m_incomingAmount;
 
         private void MatchOffers(TransferReason material)
         {
-            GetParams();
+            if (!_init)
+            {
+                Init();
+                _init = true;
+            }
 
             if (material != TransferReason.None)
             {
@@ -534,8 +516,6 @@ namespace EmployOvereducatedWorkers
                 m_incomingAmount[(int)material] = 0;
                 m_outgoingAmount[(int)material] = 0;
             }
-
-            SetParams();
         }
 
         private void StartTransfer(TransferManager.TransferReason material, TransferManager.TransferOffer offerOut, TransferManager.TransferOffer offerIn, int delta)
