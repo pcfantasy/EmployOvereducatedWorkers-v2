@@ -62,7 +62,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "C:\Users\Administrator\Desktop\Other Mod\EmployOvereducatedWorkers\EmployOvereducatedWorkers\bin\Release\EmployOvereducatedWorkers.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1674732053\EmployOvereducatedWorkers.dll"</PostBuildEvent>
+    <PostBuildEvent>copy "D:\Mod\EmployOvereducatedWorkers-v2\bin\Release\EmployOvereducatedWorkers.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1674732053\EmployOvereducatedWorkers.dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
