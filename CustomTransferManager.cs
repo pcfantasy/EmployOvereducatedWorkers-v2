@@ -1,11 +1,6 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Plugins;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace EmployOvereducatedWorkers
@@ -13,230 +8,10 @@ namespace EmployOvereducatedWorkers
     public class CustomTransferManager : TransferManager
     {
         private static bool _init = false;
-        private static float GetDistanceMultiplier(TransferReason material)
-        {
-            switch (material)
-            {
-                case TransferReason.Garbage:
-                    return 5E-07f;
-                case TransferReason.Crime:
-                    return 1E-05f;
-                case TransferReason.Sick:
-                    return 1E-06f;
-                case TransferReason.Dead:
-                    return 1E-05f;
-                case TransferReason.Worker0:
-                    return 1E-07f;
-                case TransferReason.Worker1:
-                    return 1E-07f;
-                case TransferReason.Worker2:
-                    return 1E-07f;
-                case TransferReason.Worker3:
-                    return 1E-07f;
-                case TransferReason.Student1:
-                    return 2E-07f;
-                case TransferReason.Student2:
-                    return 2E-07f;
-                case TransferReason.Student3:
-                    return 2E-07f;
-                case TransferReason.Fire:
-                    return 1E-05f;
-                case TransferReason.Bus:
-                    return 1E-05f;
-                case TransferReason.Oil:
-                    return 1E-07f;
-                case TransferReason.Ore:
-                    return 1E-07f;
-                case TransferReason.Logs:
-                    return 1E-07f;
-                case TransferReason.Grain:
-                    return 1E-07f;
-                case TransferReason.Goods:
-                    return 1E-07f;
-                case TransferReason.PassengerTrain:
-                    return 1E-05f;
-                case TransferReason.Coal:
-                    return 1E-07f;
-                case TransferReason.Family0:
-                    return 1E-08f;
-                case TransferReason.Family1:
-                    return 1E-08f;
-                case TransferReason.Family2:
-                    return 1E-08f;
-                case TransferReason.Family3:
-                    return 1E-08f;
-                case TransferReason.Single0:
-                    return 1E-08f;
-                case TransferReason.Single1:
-                    return 1E-08f;
-                case TransferReason.Single2:
-                    return 1E-08f;
-                case TransferReason.Single3:
-                    return 1E-08f;
-                case TransferReason.PartnerYoung:
-                    return 1E-08f;
-                case TransferReason.PartnerAdult:
-                    return 1E-08f;
-                case TransferReason.Shopping:
-                    return 2E-07f;
-                case TransferReason.Petrol:
-                    return 1E-07f;
-                case TransferReason.Food:
-                    return 1E-07f;
-                case TransferReason.LeaveCity0:
-                    return 1E-08f;
-                case TransferReason.LeaveCity1:
-                    return 1E-08f;
-                case TransferReason.LeaveCity2:
-                    return 1E-08f;
-                case TransferReason.Entertainment:
-                    return 2E-07f;
-                case TransferReason.Lumber:
-                    return 1E-07f;
-                case TransferReason.GarbageMove:
-                    return 5E-07f;
-                case TransferReason.MetroTrain:
-                    return 1E-05f;
-                case TransferReason.PassengerPlane:
-                    return 1E-05f;
-                case TransferReason.PassengerShip:
-                    return 1E-05f;
-                case TransferReason.DeadMove:
-                    return 5E-07f;
-                case TransferReason.DummyCar:
-                    return -1E-08f;
-                case TransferReason.DummyTrain:
-                    return -1E-08f;
-                case TransferReason.DummyShip:
-                    return -1E-08f;
-                case TransferReason.DummyPlane:
-                    return -1E-08f;
-                case TransferReason.Single0B:
-                    return 1E-08f;
-                case TransferReason.Single1B:
-                    return 1E-08f;
-                case TransferReason.Single2B:
-                    return 1E-08f;
-                case TransferReason.Single3B:
-                    return 1E-08f;
-                case TransferReason.ShoppingB:
-                    return 2E-07f;
-                case TransferReason.ShoppingC:
-                    return 2E-07f;
-                case TransferReason.ShoppingD:
-                    return 2E-07f;
-                case TransferReason.ShoppingE:
-                    return 2E-07f;
-                case TransferReason.ShoppingF:
-                    return 2E-07f;
-                case TransferReason.ShoppingG:
-                    return 2E-07f;
-                case TransferReason.ShoppingH:
-                    return 2E-07f;
-                case TransferReason.EntertainmentB:
-                    return 2E-07f;
-                case TransferReason.EntertainmentC:
-                    return 2E-07f;
-                case TransferReason.EntertainmentD:
-                    return 2E-07f;
-                case TransferReason.Taxi:
-                    return 1E-05f;
-                case TransferReason.CriminalMove:
-                    return 5E-07f;
-                case TransferReason.Tram:
-                    return 1E-05f;
-                case TransferReason.Snow:
-                    return 5E-07f;
-                case TransferReason.SnowMove:
-                    return 5E-07f;
-                case TransferReason.RoadMaintenance:
-                    return 5E-07f;
-                case TransferReason.SickMove:
-                    return 1E-07f;
-                case TransferReason.ForestFire:
-                    return 1E-05f;
-                case TransferReason.Collapsed:
-                    return 1E-05f;
-                case TransferReason.Collapsed2:
-                    return 1E-05f;
-                case TransferReason.Fire2:
-                    return 1E-05f;
-                case TransferReason.Sick2:
-                    return 1E-06f;
-                case TransferReason.FloodWater:
-                    return 5E-07f;
-                case TransferReason.EvacuateA:
-                    return 1E-05f;
-                case TransferReason.EvacuateB:
-                    return 1E-05f;
-                case TransferReason.EvacuateC:
-                    return 1E-05f;
-                case TransferReason.EvacuateD:
-                    return 1E-05f;
-                case TransferReason.EvacuateVipA:
-                    return 1E-05f;
-                case TransferReason.EvacuateVipB:
-                    return 1E-05f;
-                case TransferReason.EvacuateVipC:
-                    return 1E-05f;
-                case TransferReason.EvacuateVipD:
-                    return 1E-05f;
-                case TransferReason.Ferry:
-                    return 1E-05f;
-                case TransferReason.CableCar:
-                    return 1E-05f;
-                case TransferReason.Blimp:
-                    return 1E-05f;
-                case TransferReason.Monorail:
-                    return 1E-05f;
-                case TransferReason.TouristBus:
-                    return 1E-05f;
-                case TransferReason.ParkMaintenance:
-                    return 5E-07f;
-                case TransferReason.TouristA:
-                    return 2E-07f;
-                case TransferReason.TouristB:
-                    return 2E-07f;
-                case TransferReason.TouristC:
-                    return 2E-07f;
-                case TransferReason.TouristD:
-                    return 2E-07f;
-                case TransferReason.Mail:
-                    return 1E-05f;
-                case TransferReason.UnsortedMail:
-                    return 5E-07f;
-                case TransferReason.SortedMail:
-                    return 5E-07f;
-                case TransferReason.OutgoingMail:
-                    return 5E-07f;
-                case TransferReason.IncomingMail:
-                    return 5E-07f;
-                case TransferReason.AnimalProducts:
-                    return 1E-07f;
-                case TransferReason.Flours:
-                    return 1E-07f;
-                case TransferReason.Paper:
-                    return 1E-07f;
-                case TransferReason.PlanedTimber:
-                    return 1E-07f;
-                case TransferReason.Petroleum:
-                    return 1E-07f;
-                case TransferReason.Plastics:
-                    return 1E-07f;
-                case TransferReason.Glass:
-                    return 1E-07f;
-                case TransferReason.Metals:
-                    return 1E-07f;
-                case TransferReason.LuxuryProducts:
-                    return 1E-07f;
-                default:
-                    return 1E-07f;
-            }
-        }
 
         private static void Init()
         {
-            var inst = Singleton<TransferManager>.instance;
+            var inst = instance;
             var incomingCount = typeof(TransferManager).GetField("m_incomingCount", BindingFlags.NonPublic | BindingFlags.Instance);
             var incomingOffers = typeof(TransferManager).GetField("m_incomingOffers", BindingFlags.NonPublic | BindingFlags.Instance);
             var incomingAmount = typeof(TransferManager).GetField("m_incomingAmount", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -255,6 +30,8 @@ namespace EmployOvereducatedWorkers
             m_outgoingCount = outgoingCount.GetValue(inst) as ushort[];
             m_outgoingOffers = outgoingOffers.GetValue(inst) as TransferManager.TransferOffer[];
             m_outgoingAmount = outgoingAmount.GetValue(inst) as int[];
+
+            InitDelegate();
         }
 
         private static TransferManager.TransferOffer[] m_outgoingOffers;
@@ -279,7 +56,7 @@ namespace EmployOvereducatedWorkers
 
             if (material != TransferReason.None)
             {
-                float distanceMultiplier = GetDistanceMultiplier(material);
+                float distanceMultiplier = TransferManagerGetDistanceMultiplierDG(material);
                 float maxDistance = (distanceMultiplier == 0f) ? 0f : (0.01f / distanceMultiplier);
                 for (int priority = 7; priority >= 0; priority--)
                 {
@@ -353,7 +130,7 @@ namespace EmployOvereducatedWorkers
                                     int matchedOfferAmount = Mathf.Min(incomingOfferAmount, outgoingOfferAmount);
                                     if (matchedOfferAmount != 0)
                                     {
-                                        StartTransfer(material2, outgoingOffer, incomingOffer, matchedOfferAmount);
+                                        TransferManagerStartTransferDG(instance, material2, outgoingOffer, incomingOffer, matchedOfferAmount);
                                     }
                                     incomingOfferAmount -= matchedOfferAmount;
                                     outgoingOfferAmount -= matchedOfferAmount;
@@ -460,7 +237,7 @@ namespace EmployOvereducatedWorkers
                                     int matchedOfferAmount = Mathf.Min(outgoingOfferAmount, incomingOfferAmount);
                                     if (matchedOfferAmount != 0)
                                     {
-                                        StartTransfer(material2, outgoingOffer, incomingOffer, matchedOfferAmount);
+                                        TransferManagerStartTransferDG(instance, material2, outgoingOffer, incomingOffer, matchedOfferAmount);
                                     }
                                     outgoingOfferAmount -= matchedOfferAmount;
                                     incomingOfferAmount -= matchedOfferAmount;
@@ -518,112 +295,6 @@ namespace EmployOvereducatedWorkers
             }
         }
 
-        private void StartTransfer(TransferManager.TransferReason material, TransferManager.TransferOffer offerOut, TransferManager.TransferOffer offerIn, int delta)
-        {
-            bool active = offerIn.Active;
-            bool active2 = offerOut.Active;
-            if (active && offerIn.Vehicle != 0)
-            {
-                Array16<Vehicle> vehicles = Singleton<VehicleManager>.instance.m_vehicles;
-                ushort vehicle = offerIn.Vehicle;
-                VehicleInfo info = vehicles.m_buffer[(int)vehicle].Info;
-                offerOut.Amount = delta;
-                info.m_vehicleAI.StartTransfer(vehicle, ref vehicles.m_buffer[(int)vehicle], material, offerOut);
-            }
-            else if (active2 && offerOut.Vehicle != 0)
-            {
-                Array16<Vehicle> vehicles2 = Singleton<VehicleManager>.instance.m_vehicles;
-                ushort vehicle2 = offerOut.Vehicle;
-                VehicleInfo info2 = vehicles2.m_buffer[(int)vehicle2].Info;
-                offerIn.Amount = delta;
-                info2.m_vehicleAI.StartTransfer(vehicle2, ref vehicles2.m_buffer[(int)vehicle2], material, offerIn);
-            }
-            else if (active && offerIn.Citizen != 0u)
-            {
-                Array32<Citizen> citizens = Singleton<CitizenManager>.instance.m_citizens;
-                uint citizen = offerIn.Citizen;
-                CitizenInfo citizenInfo = citizens.m_buffer[(int)((UIntPtr)citizen)].GetCitizenInfo(citizen);
-                if (citizenInfo != null)
-                {
-                    offerOut.Amount = delta;
-                    citizenInfo.m_citizenAI.StartTransfer(citizen, ref citizens.m_buffer[(int)((UIntPtr)citizen)], material, offerOut);
-                }
-            }
-            else if (active2 && offerOut.Citizen != 0u)
-            {
-                Array32<Citizen> citizens2 = Singleton<CitizenManager>.instance.m_citizens;
-                uint citizen2 = offerOut.Citizen;
-                CitizenInfo citizenInfo2 = citizens2.m_buffer[(int)((UIntPtr)citizen2)].GetCitizenInfo(citizen2);
-                if (citizenInfo2 != null)
-                {
-                    offerIn.Amount = delta;
-                    // NON-STOCK CODE START
-                    // For RealCity
-                    // Remove cotenancy, otherwise we can not caculate family money
-                    bool flag2 = false;
-                    bool flag = false;
-                    if (Loader.isRealCityRunning)
-                    {
-                        flag2 = (material == TransferManager.TransferReason.Single0 || material == TransferManager.TransferReason.Single1 || material == TransferManager.TransferReason.Single2 || material == TransferManager.TransferReason.Single3 || material == TransferManager.TransferReason.Single0B || material == TransferManager.TransferReason.Single1B || material == TransferManager.TransferReason.Single2B || material == TransferManager.TransferReason.Single3B);
-                        flag = (citizenInfo2.m_citizenAI is ResidentAI) && (Singleton<BuildingManager>.instance.m_buildings.m_buffer[offerIn.Building].Info.m_class.m_service == ItemClass.Service.Residential);
-                    }
-
-                    if (flag && flag2)
-                    {
-                        if (material == TransferManager.TransferReason.Single0 || material == TransferManager.TransferReason.Single0B)
-                        {
-                            material = TransferManager.TransferReason.Family0;
-                        }
-                        else if (material == TransferManager.TransferReason.Single1 || material == TransferManager.TransferReason.Single1B)
-                        {
-                            material = TransferManager.TransferReason.Family1;
-                        }
-                        else if (material == TransferManager.TransferReason.Single2 || material == TransferManager.TransferReason.Single2B)
-                        {
-                            material = TransferManager.TransferReason.Family2;
-                        }
-                        else if (material == TransferManager.TransferReason.Single3 || material == TransferManager.TransferReason.Single3B)
-                        {
-                            material = TransferManager.TransferReason.Family3;
-                        }
-                        citizenInfo2.m_citizenAI.StartTransfer(citizen2, ref citizens2.m_buffer[(int)((UIntPtr)citizen2)], material, offerIn);
-                    }
-                    else
-                    {
-                        /// NON-STOCK CODE END ///
-                        citizenInfo2.m_citizenAI.StartTransfer(citizen2, ref citizens2.m_buffer[(int)((UIntPtr)citizen2)], material, offerIn);
-                    }
-                }
-            }
-            else if (active2 && offerOut.Building != 0)
-            {
-                Array16<Building> buildings = Singleton<BuildingManager>.instance.m_buildings;
-                ushort building = offerOut.Building;
-                ushort building1 = offerIn.Building;
-                BuildingInfo info3 = buildings.m_buffer[(int)building].Info;
-                offerIn.Amount = delta;
-                // NON-STOCK CODE START
-                // New Outside Interaction Mod
-                if ((material == TransferManager.TransferReason.DeadMove || material == TransferManager.TransferReason.GarbageMove) && Singleton<BuildingManager>.instance.m_buildings.m_buffer[offerOut.Building].m_flags.IsFlagSet(Building.Flags.Untouchable))
-                {
-                    StartMoreTransfer(building, ref buildings.m_buffer[(int)building], material, offerIn);
-                }
-                else
-                {
-                    // NON-STOCK CODE END
-                    info3.m_buildingAI.StartTransfer(building, ref buildings.m_buffer[(int)building], material, offerIn);
-                }
-            }
-            else if (active && offerIn.Building != 0)
-            {
-                Array16<Building> buildings2 = Singleton<BuildingManager>.instance.m_buildings;
-                ushort building2 = offerIn.Building;
-                BuildingInfo info4 = buildings2.m_buffer[(int)building2].Info;
-                offerOut.Amount = delta;
-                info4.m_buildingAI.StartTransfer(building2, ref buildings2.m_buffer[(int)building2], material, offerOut);
-            }
-        }
-
         public void StartMoreTransfer(ushort buildingID, ref Building data, TransferManager.TransferReason material, TransferManager.TransferOffer offer)
         {
             if (material == TransferManager.TransferReason.GarbageMove)
@@ -657,5 +328,17 @@ namespace EmployOvereducatedWorkers
                 }
             }
         }
+
+        public static void InitDelegate()
+        {
+            TransferManagerStartTransferDG = FastDelegateFactory.Create<TransferManagerStartTransfer>(typeof(TransferManager), "StartTransfer", instanceMethod: true);
+            TransferManagerGetDistanceMultiplierDG = FastDelegateFactory.Create<TransferManagerGetDistanceMultiplier>(typeof(TransferManager), "GetDistanceMultiplier", instanceMethod: false);
+        }
+
+        public delegate void TransferManagerStartTransfer(TransferManager TransferManager, TransferReason material, TransferOffer offerOut, TransferOffer offerIn, int delta);
+        public static TransferManagerStartTransfer TransferManagerStartTransferDG;
+
+        public delegate float TransferManagerGetDistanceMultiplier(TransferManager.TransferReason material);
+        public static TransferManagerGetDistanceMultiplier TransferManagerGetDistanceMultiplierDG;
     }
 }

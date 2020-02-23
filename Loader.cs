@@ -15,7 +15,6 @@ namespace EmployOvereducatedWorkers
     {
         public static LoadMode CurrentLoadMode;
         public static RedirectCallsState state1;
-        public static bool isRealCityRunning = false;
         public static bool isMoreEffectiveTransferRunning = false;
 
         public override void OnCreated(ILoading loading)
@@ -62,7 +61,6 @@ namespace EmployOvereducatedWorkers
 
         public void Detour()
         {
-            isRealCityRunning = CheckRealCityIsLoaded();
             isMoreEffectiveTransferRunning = CheckMoreEffectiveTransferIsLoaded();
             if (!isMoreEffectiveTransferRunning)
             {
@@ -116,12 +114,12 @@ namespace EmployOvereducatedWorkers
 
         private bool CheckRealCityIsLoaded()
         {
-            return this.Check3rdPartyModLoaded("RealCity", true);
+            return this.Check3rdPartyModLoaded("RealCity", false);
         }
 
         private bool CheckMoreEffectiveTransferIsLoaded()
         {
-            return this.Check3rdPartyModLoaded("MoreEffectiveTransfer", true);
+            return this.Check3rdPartyModLoaded("MoreEffectiveTransfer", false);
         }
     }
 }
