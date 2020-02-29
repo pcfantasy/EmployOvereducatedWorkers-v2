@@ -13,9 +13,10 @@ namespace EmployOvereducatedWorkers
 {
     public class Loader : LoadingExtensionBase
     {
+        public static bool DetourInited = false;
+        public static bool HarmonyDetourInited = false;
+        public static bool HarmonyDetourFailed = true;
         public static LoadMode CurrentLoadMode;
-        public static RedirectCallsState state1;
-        public static bool isMoreEffectiveTransferRunning = false;
 
         public override void OnCreated(ILoading loading)
         {
@@ -23,103 +24,49 @@ namespace EmployOvereducatedWorkers
 
         }
 
-        public override void OnLevelLoaded(LoadMode mode)
+        public void HarmonyInitDetour()
         {
-            base.OnLevelLoaded(mode);
-            Loader.CurrentLoadMode = mode;
-            if (EmployOvereducatedWorkers.IsEnabled)
+            if (!HarmonyDetourInited)
             {
-                if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
-                {
-                    DebugLog.LogToFileOnly("OnLevelLoaded");
-                    Detour();
-                    if (mode == LoadMode.NewGame)
-                    {
-                        DebugLog.LogToFileOnly("New Game");
-                    }
-                }
+                DebugLog.LogToFileOnly("Init harmony detours");
+                HarmonyDetours.Apply();
+                HarmonyDetourInited = true;
             }
         }
 
-
-        public override void OnLevelUnloading()
+        public void HarmonyRevertDetour()
         {
-            base.OnLevelUnloading();
-            if (CurrentLoadMode == LoadMode.LoadGame || CurrentLoadMode == LoadMode.NewGame)
+            if (HarmonyDetourInited)
             {
-                if (EmployOvereducatedWorkers.IsEnabled)
-                {
-                    RevertDetour();
-                }
+                DebugLog.LogToFileOnly("Revert harmony detours");
+                HarmonyDetours.DeApply();
+                HarmonyDetourInited = false;
+                HarmonyDetourFailed = true;
             }
         }
 
-        public override void OnReleased()
+        public void InitDetour()
         {
-            base.OnReleased();
-        }
-
-        public void Detour()
-        {
-            isMoreEffectiveTransferRunning = CheckMoreEffectiveTransferIsLoaded();
-            if (!isMoreEffectiveTransferRunning)
+            if (!DetourInited)
             {
-                var srcMethod1 = typeof(TransferManager).GetMethod("MatchOffers", BindingFlags.NonPublic | BindingFlags.Instance);
-                var destMethod1 = typeof(CustomTransferManager).GetMethod("MatchOffers", BindingFlags.NonPublic | BindingFlags.Instance);
-                state1 = RedirectionHelper.RedirectCalls(srcMethod1, destMethod1);
+                DebugLog.LogToFileOnly("Init detours");
+                DetourInited = true;
             }
         }
 
         public void RevertDetour()
         {
-            if (!isMoreEffectiveTransferRunning)
+            if (DetourInited)
             {
-                var srcMethod1 = typeof(TransferManager).GetMethod("MatchOffers", BindingFlags.NonPublic | BindingFlags.Instance);
-                RedirectionHelper.RevertRedirect(srcMethod1, state1);
+                DebugLog.LogToFileOnly("Revert detours");
+                DetourInited = false;
             }
+            EmployOvereducatedWorkersThreading.isFirstTime = true;
         }
 
-        private bool Check3rdPartyModLoaded(string namespaceStr, bool printAll = false)
+        public override void OnReleased()
         {
-            bool thirdPartyModLoaded = false;
-
-            var loadingWrapperLoadingExtensionsField = typeof(LoadingWrapper).GetField("m_LoadingExtensions", BindingFlags.NonPublic | BindingFlags.Instance);
-            List<ILoadingExtension> loadingExtensions = (List<ILoadingExtension>)loadingWrapperLoadingExtensionsField.GetValue(Singleton<LoadingManager>.instance.m_LoadingWrapper);
-
-            if (loadingExtensions != null)
-            {
-                foreach (ILoadingExtension extension in loadingExtensions)
-                {
-                    if (printAll)
-                        DebugLog.LogToFileOnly($"Detected extension: {extension.GetType().Name} in namespace {extension.GetType().Namespace}");
-                    if (extension.GetType().Namespace == null)
-                        continue;
-
-                    var nsStr = extension.GetType().Namespace.ToString();
-                    if (namespaceStr.Equals(nsStr))
-                    {
-                        DebugLog.LogToFileOnly($"The mod '{namespaceStr}' has been detected.");
-                        thirdPartyModLoaded = true;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                DebugLog.LogToFileOnly("Could not get loading extensions");
-            }
-
-            return thirdPartyModLoaded;
-        }
-
-        private bool CheckRealCityIsLoaded()
-        {
-            return this.Check3rdPartyModLoaded("RealCity", false);
-        }
-
-        private bool CheckMoreEffectiveTransferIsLoaded()
-        {
-            return this.Check3rdPartyModLoaded("MoreEffectiveTransfer", false);
+            base.OnReleased();
         }
     }
 }

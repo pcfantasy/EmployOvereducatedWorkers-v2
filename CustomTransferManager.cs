@@ -7,9 +7,9 @@ namespace EmployOvereducatedWorkers
 {
     public class CustomTransferManager : TransferManager
     {
-        private static bool _init = false;
+        public static bool _init = false;
 
-        private static void Init()
+        public static void Init()
         {
             var inst = instance;
             var incomingCount = typeof(TransferManager).GetField("m_incomingCount", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -34,19 +34,45 @@ namespace EmployOvereducatedWorkers
             InitDelegate();
         }
 
-        private static TransferManager.TransferOffer[] m_outgoingOffers;
+        public static TransferManager.TransferOffer[] m_outgoingOffers;
 
-        private static TransferManager.TransferOffer[] m_incomingOffers;
+        public static TransferManager.TransferOffer[] m_incomingOffers;
 
-        private static ushort[] m_outgoingCount;
+        public static ushort[] m_outgoingCount;
 
-        private static ushort[] m_incomingCount;
+        public static ushort[] m_incomingCount;
 
-        private static int[] m_outgoingAmount;
+        public static int[] m_outgoingAmount;
 
-        private static int[] m_incomingAmount;
+        public static int[] m_incomingAmount;
 
-        private void MatchOffers(TransferReason material)
+        public static bool CanUseNewMatchOffers(TransferReason material)
+        {
+            switch (material)
+            {
+                case TransferReason.Worker0:
+                case TransferReason.Worker1:
+                case TransferReason.Worker2:
+                case TransferReason.Worker3:
+                    return true;
+                default: return false;
+            }
+        }
+
+        public static bool TransferManagerMatchOffersPrefix(TransferReason material)
+        {
+            if (CanUseNewMatchOffers(material))
+            {
+                MatchOffers(material);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public static void MatchOffers(TransferReason material)
         {
             if (!_init)
             {
@@ -292,40 +318,6 @@ namespace EmployOvereducatedWorkers
                 }
                 m_incomingAmount[(int)material] = 0;
                 m_outgoingAmount[(int)material] = 0;
-            }
-        }
-
-        public void StartMoreTransfer(ushort buildingID, ref Building data, TransferManager.TransferReason material, TransferManager.TransferOffer offer)
-        {
-            if (material == TransferManager.TransferReason.GarbageMove)
-            {
-                VehicleInfo randomVehicleInfo2 = Singleton<VehicleManager>.instance.GetRandomVehicleInfo(ref Singleton<SimulationManager>.instance.m_randomizer, ItemClass.Service.Garbage, ItemClass.SubService.None, ItemClass.Level.Level1);
-                if (randomVehicleInfo2 != null)
-                {
-                    Array16<Vehicle> vehicles2 = Singleton<VehicleManager>.instance.m_vehicles;
-                    ushort num2;
-                    if (Singleton<VehicleManager>.instance.CreateVehicle(out num2, ref Singleton<SimulationManager>.instance.m_randomizer, randomVehicleInfo2, data.m_position, material, false, true))
-                    {
-                        randomVehicleInfo2.m_vehicleAI.SetSource(num2, ref vehicles2.m_buffer[(int)num2], buildingID);
-                        randomVehicleInfo2.m_vehicleAI.StartTransfer(num2, ref vehicles2.m_buffer[(int)num2], material, offer);
-                        vehicles2.m_buffer[num2].m_flags |= (Vehicle.Flags.Importing);
-                    }
-                }
-            }
-            else if (material == TransferManager.TransferReason.DeadMove)
-            {
-                VehicleInfo randomVehicleInfo2 = Singleton<VehicleManager>.instance.GetRandomVehicleInfo(ref Singleton<SimulationManager>.instance.m_randomizer, ItemClass.Service.HealthCare, ItemClass.SubService.None, ItemClass.Level.Level2);
-                if (randomVehicleInfo2 != null)
-                {
-                    Array16<Vehicle> vehicles2 = Singleton<VehicleManager>.instance.m_vehicles;
-                    ushort num2;
-                    if (Singleton<VehicleManager>.instance.CreateVehicle(out num2, ref Singleton<SimulationManager>.instance.m_randomizer, randomVehicleInfo2, data.m_position, material, false, true))
-                    {
-                        randomVehicleInfo2.m_vehicleAI.SetSource(num2, ref vehicles2.m_buffer[(int)num2], buildingID);
-                        randomVehicleInfo2.m_vehicleAI.StartTransfer(num2, ref vehicles2.m_buffer[(int)num2], material, offer);
-                        vehicles2.m_buffer[num2].m_flags |= (Vehicle.Flags.Importing);
-                    }
-                }
             }
         }
 
