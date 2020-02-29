@@ -24,6 +24,39 @@ namespace EmployOvereducatedWorkers
 
         }
 
+        public override void OnLevelLoaded(LoadMode mode)
+        {
+            base.OnLevelLoaded(mode);
+            Loader.CurrentLoadMode = mode;
+            if (EmployOvereducatedWorkers.IsEnabled)
+            {
+                if (mode == LoadMode.LoadGame || mode == LoadMode.NewGame)
+                {
+                    DebugLog.LogToFileOnly("OnLevelLoaded");
+                    InitDetour();
+                    HarmonyInitDetour();
+                    if (mode == LoadMode.NewGame)
+                    {
+                        DebugLog.LogToFileOnly("New Game");
+                    }
+                }
+            }
+        }
+
+
+        public override void OnLevelUnloading()
+        {
+            base.OnLevelUnloading();
+            if (CurrentLoadMode == LoadMode.LoadGame || CurrentLoadMode == LoadMode.NewGame)
+            {
+                if (EmployOvereducatedWorkers.IsEnabled)
+                {
+                    RevertDetour();
+                    HarmonyRevertDetour();
+                }
+            }
+        }
+
         public void HarmonyInitDetour()
         {
             if (!HarmonyDetourInited)
