@@ -287,11 +287,11 @@ namespace EmployOvereducatedWorkers
                                 }
                                 while (outgoingOfferAmount != 0);
                                 // NON-STOCK CODE START
-                                if (outgoingOfferAmount == 0 || material2 < TransferManager.TransferReason.Worker0 || TransferManager.TransferReason.Worker3 <= material2)
+                                if (outgoingOfferAmount == 0 || material2 <= TransferManager.TransferReason.Worker0 || TransferManager.TransferReason.Worker3 < material2)
                                 {
                                     break;
                                 }
-                                material2++;
+                                material2--;
                             } while (true);
                             // NON-STOCK CODE END
                             //matched outgoingOffer is empty now
